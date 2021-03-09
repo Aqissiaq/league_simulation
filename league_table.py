@@ -9,21 +9,20 @@ def play_game():
     result = randint(0, 2)
     if result == 0:
         return 3, 0
-    elif result == 1:
+    if result == 1:
         return 0, 3
-    else:
-        return 1, 1
+    return 1, 1
 
-def strictly_descending(sequence: list):
-    for a,b in zip(sequence, sequence[1:]):
+def strictly_descending(lst: list):
+    for a, b in zip(lst, lst[1:]):
         if a-b != 1:
             return False
     return True
 
-def play_round(league : dict):
+def play_round(league: dict):
     teams = list(league.keys())
     shuffle(teams)
-    pairings = [(teams[i], teams[i+1]) for i in range(0, len(teams), 2)]
+    pairings = list(zip(teams[::2], teams[1::2]))
     for t1, t2 in pairings:
         t1_score, t2_score = play_game()
         league[t1] += t1_score
@@ -40,7 +39,7 @@ if __name__ == "__main__":
             for n in range(2, n_teams):
                 if strictly_descending(sorted(list(league.values()), reverse=True)[:n]):
                     n_sorted_after_g_games[games][n] += 1
-    
+
     proportion_sorted = [{n:(p/N) for n, p in d.items()} for d in n_sorted_after_g_games.values()]
     with open("league_data.txt", "w+") as f:
         f.write(f"Games,n,percentage sorted\n")
